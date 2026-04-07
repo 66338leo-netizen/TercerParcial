@@ -29,7 +29,6 @@ def leer_archivo():
     try:
         with open(nombre,"r") as archivo:
             contenido=archivo.readlines()
-            os.system("cls")
             print("\nContenido del archivo: ")
             print(contenido)
             print("--------------------------------")
