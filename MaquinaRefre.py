@@ -1,6 +1,9 @@
-import tkinter as tk
+import customtkinter as ctk
 from tkinter import messagebox
 from PIL import Image, ImageTk
+
+ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("blue")
 
 refrescos = {
     "Aurrera": {"precio": 5, "stock": 5, "img": "aurrera.jpeg"},
@@ -18,10 +21,10 @@ def mostrar_imagen():
     try:
         img = Image.open(refrescos[r]["img"]).resize((120,200))
         img = ImageTk.PhotoImage(img)
-        label_img.config(image=img)
+        label_img.configure(image=img, text="")
         label_img.image = img
     except:
-        label_img.config(text="Sin imagen")
+        label_img.configure(text="Sin imagen", image=None)
 
 def ingresar():
     global total
@@ -31,8 +34,8 @@ def ingresar():
             messagebox.showerror("Error","Moneda no válida")
             return
         total += m
-        label_dinero.config(text=f"$ {total}")
-        entry.delete(0, tk.END)
+        label_dinero.configure(text=f"$ {total}")
+        entry.delete(0, "end")
     except:
         messagebox.showerror("Error","Valor inválido")
 
@@ -58,41 +61,45 @@ def comprar():
     cambio = total - precio
     total = 0
 
-    label_dinero.config(text="$ 0")
-    label_cambio.config(text=f"Cambio: $ {cambio}")
+    label_dinero.configure(text="$ 0")
+    label_cambio.configure(text=f"Cambio: $ {cambio}")
 
     actualizar_lista()
 
-    # ventana compra
-    win = tk.Toplevel(root)
-    tk.Label(win,text="GRACIAS POR SU COMPRA").pack()
-    tk.Label(win,text=f"Cambio: {cambio}").pack()
+    win = ctk.CTkToplevel(root)
+    win.geometry("250x300")
+
+    ctk.CTkLabel(win, text="GRACIAS POR SU COMPRA").pack(pady=10)
+    ctk.CTkLabel(win, text=f"Cambio: {cambio}").pack()
 
     try:
         img = Image.open(refrescos[r]["img"]).resize((100,180))
         img = ImageTk.PhotoImage(img)
-        l = tk.Label(win,image=img)
+        l = ctk.CTkLabel(win, image=img, text="")
         l.image = img
-        l.pack()
+        l.pack(pady=10)
     except:
         pass
 
-    tk.Button(win,text="OK",command=win.destroy).pack()
+    ctk.CTkButton(win, text="OK", command=win.destroy).pack(pady=10)
 
 def actualizar_lista():
     for r in refrescos:
-        botones[r].config(text=f"{r} {refrescos[r]['stock']}")
+        botones[r].configure(text=f"{r} {refrescos[r]['stock']}")
 
 def surtir():
-    win = tk.Toplevel(root)
+    win = ctk.CTkToplevel(root)
+    win.geometry("300x250")
 
-    tk.Label(win,text="Refresco").pack()
-    var = tk.StringVar(value=list(refrescos.keys())[0])
-    tk.OptionMenu(win,var,*refrescos.keys()).pack()
+    ctk.CTkLabel(win, text="Refresco").pack(pady=5)
 
-    tk.Label(win,text="Cantidad").pack()
-    e = tk.Entry(win)
-    e.pack()
+    var = ctk.StringVar(value=list(refrescos.keys())[0])
+    menu = ctk.CTkOptionMenu(win, variable=var, values=list(refrescos.keys()))
+    menu.pack(pady=5)
+
+    ctk.CTkLabel(win, text="Cantidad").pack(pady=5)
+    e = ctk.CTkEntry(win)
+    e.pack(pady=5)
 
     def aplicar():
         try:
@@ -106,41 +113,43 @@ def surtir():
         except:
             messagebox.showerror("Error","Valor inválido")
 
-    tk.Button(win,text="OK",command=aplicar).pack()
+    ctk.CTkButton(win, text="OK", command=aplicar).pack(pady=10)
 
-root = tk.Tk()
+# Ventana principal
+root = ctk.CTk()
 root.geometry("650x500")
 
-menu = tk.Menu(root)
-op = tk.Menu(menu, tearoff=0)
-op.add_command(label="Surtir", command=surtir)
-menu.add_cascade(label="Opciones", menu=op)
-root.config(menu=menu)
+ctk.CTkLabel(root, text="0.5,1,2,5,10").place(x=20,y=10)
 
-tk.Label(root,text="0.5,1,2,5,10").place(x=20,y=10)
-
-label_dinero = tk.Label(root,text="$ 0")
+label_dinero = ctk.CTkLabel(root, text="$ 0")
 label_dinero.place(x=250,y=10)
 
-entry = tk.Entry(root)
+entry = ctk.CTkEntry(root)
 entry.place(x=100,y=40)
 
-tk.Button(root,text="Ingresar",command=ingresar).place(x=250,y=38)
+ctk.CTkButton(root, text="Ingresar", command=ingresar).place(x=250,y=38)
 
-label_cambio = tk.Label(root,text="Cambio: $ 0")
+label_cambio = ctk.CTkLabel(root, text="Cambio: $ 0")
 label_cambio.place(x=200,y=80)
-seleccion = tk.StringVar()
+
+seleccion = ctk.StringVar()
 
 botones = {}
-for i,r in enumerate(refrescos):
-    rb = tk.Radiobutton(root,text=f"{r} {refrescos[r]['stock']}",
-                        variable=seleccion,value=r,
-                        command=mostrar_imagen)
+for i, r in enumerate(refrescos):
+    rb = ctk.CTkRadioButton(root,
+                            text=f"{r} {refrescos[r]['stock']}",
+                            variable=seleccion,
+                            value=r,
+                            command=mostrar_imagen)
     rb.place(x=50,y=150+i*30)
     botones[r] = rb
 
-label_img = tk.Label(root)
+label_img = ctk.CTkLabel(root, text="")
 label_img.place(x=350,y=150)
 
-tk.Button(root,text="Tomar Refresco",command=comprar).place(x=200,y=400)
+ctk.CTkButton(root, text="Tomar Refresco", command=comprar).place(x=200,y=400)
+
+# Botón para surtir (porque customtkinter no usa menú clásico igual)
+ctk.CTkButton(root, text="Surtir", command=surtir).place(x=500,y=10)
+
 root.mainloop()

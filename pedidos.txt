@@ -1,0 +1,19 @@
+
+
+--- Pedido ---
+Cliente: David
+Direccion: werty
+Telefono: 12345
+Fecha: 16-04-2026 19:49:18
+('Mediana', 'Jamon,Piña,Champiñones', 2, 220)
+Total: 220
+
+--- Pedido ---
+Cliente: David
+Direccion: werty
+Telefono: 12345
+Fecha: 16-04-2026 19:49:43
+('Mediana', 'Jamon,Piña,Champiñones', 5, 550)
+('Mediana', 'Jamon,Piña,Champiñones', 5, 550)
+('Mediana', 'Jamon,Piña,Champiñones', 5, 550)
+Total: 1650
